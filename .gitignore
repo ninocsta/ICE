@@ -2,3 +2,7 @@
 /venv
 db.sqlite3
 *.pyc
+/outflows/migrations
+/inflows/migrations
+/stock/migrations
+/products/migrations

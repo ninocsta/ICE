@@ -10,4 +10,3 @@ def create_stock(sender, instance, created, **kwargs):
         Stock.objects.create(product=instance)
     
 
-
