@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h3 class="display-4">Detalhes da Saída</h3>
+
+    <div class="card">
+      <div class="card-body">
+
+        <div class="row">
+          <h3 class="card-title col ">Cliente: {{ object.client }}</h3>
+          <h3 class="card-title col text-end">Data Entrega: {{ object.delivery_date }}</h3>
+        </div>       
+        {% if object.discount %}
+        <p class="card-text m-0"> Desconto: <strong>R${{ object.discount }}</strong></p>
+        {% endif %}
+        <p class="card-text">Valor Total: <strong>R${{ outflow.total_price }}</strong></p>
+        <h4 class="card-text"><strong>Itens:</strong></h4>
+
+        <div class="table-responsive-sm">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th>Peso</th>
+                <th>Quantidade</th>
+                <th>Preço Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in outflow.items.all %}
+              <tr>
+                <td>{{ item.product.title }}</td>
+                <td>{{ item.product.weight }}kg</td>
+                <td>{{ item.quantity }}</td>
+                <td>R${{ item.total_price}} </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        
+        <p class="card-text">Observação: {{outflow.observation}}</p>
+      
+
+
+      </div>
+    </div>
+
+    <a href="{% url 'outflow_list' %}" class="btn btn-secondary mt-3">Voltar para a Lista de Saídas</a>
+  </div>
+{% endblock %}

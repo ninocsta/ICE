@@ -4,7 +4,7 @@ from products.models import Product, PriceTable
 
 
 class Outflow(models.Model):
-    created_at = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     delivery_date = models.DateField()
     client = models.ForeignKey(Client, on_delete=models.PROTECT)
     price_table = models.ForeignKey(PriceTable, on_delete=models.PROTECT)
@@ -18,14 +18,16 @@ class Outflow(models.Model):
     class Meta:
         verbose_name = 'Saída'
         verbose_name_plural = 'Saídas'   
+        ordering = ['-created_at']
 
     def get_total_price(self):
         total_price = sum(item.total_price for item in self.items.all())
+        total_price -= self.discount
         return total_price
     
     def get_total_cost(self):
         total_cost = sum(item.product.stock.average_cost * item.quantity for item in self.items.all())
-        total_cost += self.discount
+        total_cost
         return total_cost
 
     def __str__(self):

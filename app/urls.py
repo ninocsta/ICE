@@ -16,7 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.urls.conf import include
+from django.views.generic.base import RedirectView
+from inflows.views import InflowListView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', RedirectView.as_view(url='inflows/list/')),
+    path('', include('inflows.urls')),
+    path('', include('outflows.urls')),
 ]

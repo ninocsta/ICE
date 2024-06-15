@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}
+ICE - Excluir Entrada
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <h2>Excluir Entrada</h2>
+    </div>
+    <div class="col-md-6">
+        <a href="{% url 'inflow_list' %}" class="btn btn-secondary float-end">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+    </div>
+</div>
+
+<div class="card mt-3">
+    <div class="card-body">
+        <h5 class="card-title">Confirmação de Exclusão</h5>
+        <p class="card-text">Você tem certeza que deseja excluir a entrada <strong>{{ inflow.id }}</strong> e os seguintes itens relacionados?</p>
+        <ul>
+            {% for entry in inflow_items %}
+            <li>{{ entry.item.product }} - Quantidade: {{ entry.item.quantity }}, Estoque: {{ entry.stock }}</li>
+            {% endfor %}
+        </ul>
+        <form action="{% url 'inflow_delete' inflow.id %}" method="post">
+            {% csrf_token %}
+            <a href="{% url 'inflow_list' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Cancelar
+            </a>
+            {% if can_delete %}
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Excluir
+            </button>
+            {% else %}
+            <button type="submit" class="btn btn-danger" disabled>
+                <i class="bi bi-trash"></i> Excluir
+
+            </button>
+            <small class="text-danger">Não é possível excluir esta entrada pois o estoque não pode ficar negativo.</small>
+            {% endif %}
+
+        </form>
+    </div>
+</div>
+{% endblock %}

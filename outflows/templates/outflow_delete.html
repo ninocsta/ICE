@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}
+ICE - Excluir Entrada
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <h2>Excluir Saída</h2>
+    </div>
+    <div class="col-md-6">
+        <a href="{% url 'outflow_list' %}" class="btn btn-secondary float-end">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+    </div>
+</div>
+
+<div class="card mt-3">
+    <div class="card-body">
+        <h5 class="card-title">Confirmação de Exclusão</h5>
+        <p class="card-text">Você tem certeza que deseja excluir a saída <strong>{{ outflow.id }}</strong> ?</p>
+        <ul>
+            {% for entry in outflow_items %}
+            <li>{{ entry.item.product }} - Quantidade: {{ entry.item.quantity }}, Estoque: {{ entry.stock }}</li>
+            {% endfor %}
+        </ul>
+        <form action="{% url 'outflow_delete' outflow.id %}" method="post">
+            {% csrf_token %}
+            <a href="{% url 'outflow_list' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Cancelar
+            </a>
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Excluir        </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

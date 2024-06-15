@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h3 class="display-4">Detalhes da Entrada</h3>
+
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">{{ object.date }}</h3>
+        <p class="card-text">Custo Total: <strong>{{ inflow.total_cost }}</strong></p>
+        <h4 class="card-text"><strong>Itens:</strong></h4>
+
+        <div class="table-responsive-sm">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th>Peso</th>
+                <th>Quantidade</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in inflow.items.all %}
+              <tr>
+                <td>{{ item.product.title }}</td>
+                <td>{{ item.product.weight }}kg</td>
+                <td>{{ item.quantity }}</td>
+                <td>R${{ item.total_cost }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <a href="{% url 'inflow_list' %}" class="btn btn-secondary mt-3">Voltar para a Lista de Entradas</a>
+  </div>
+{% endblock %}
