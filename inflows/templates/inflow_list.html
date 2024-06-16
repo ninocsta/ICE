@@ -16,7 +16,7 @@ ICE - Entradas
   </div>
 </div>
 
-<div class="table-responsive">
+<div class="table-responsive-md">
   <table class="table table-striped table-bordered">
     <thead class="thead-dark">
       <tr>
@@ -34,7 +34,7 @@ ICE - Entradas
             {{ inflow.id }}
           </a>
         </td>
-        <td>{{ inflow.date }}</td>
+        <td>{{ inflow.date|date:"d/m/Y" }}</td>
         <td>R${{ inflow.total_cost }}</td>
         <td>
             <a href="{% url 'inflow_detail' inflow.id %}" class="btn btn-info btn-sm text-light">

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}
+ICE - Confirmar Entrega
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+  <h3 class="display-4">Confirmar Entrega</h3>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="row">
+        <h3 class="card-title col-6">Cliente: {{ outflow.client }}</h3>
+        <h3 class="card-title col-6 text-end">Data Entrega: {{ outflow.delivery_date }}</h3>
+      </div>
+      <h4 class="card-title">Desconto: R${{ outflow.discount }}</h4>
+      <h4 class="card-title">Valor Total: R${{ outflow.total_price }}</h4>
+      <h4 class="card-title">Lucro: R${{ outflow.profit }}</h4>    
+      
+      <h3 class="card-title">Itens:</h3>
+      <div class="table-responsive-sm">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Peso</th>
+              <th>Quantidade</th>
+              <th>Preço Total</th>
+              <th>Quantidade em Estoque</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in outflow_items %}
+            <tr>
+              <td>{{ item.product.title }}</td>
+              <td>{{ item.product.weight }}kg</td>
+              <td>{{ item.quantity }}</td>
+              <td>R${{ item.total_price }}</td>
+              <td>{{ item.quantity_after_outflow }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% if negative_stock %}
+      <div class="alert alert-danger" role="alert">
+        Não é possível confirmar a entrega porque o estoque de um ou mais produtos ficaria negativo.
+      </div>
+      {% endif %}
+      <form action="{% url 'outflow_deliver' outflow.id %}" method="post">
+        {% csrf_token %}
+        <a href="{% url 'outflow_list' %}" class="btn btn-secondary">
+          <i class="bi bi-arrow-left"></i> Cancelar
+      </a>
+        <button type="submit" class="btn btn-success" {% if negative_stock %}disabled{% endif %}>Confirmar Entrega</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

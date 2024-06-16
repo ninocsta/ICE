@@ -8,6 +8,7 @@ from django.urls import reverse_lazy
 from django.http import JsonResponse
 from products.models import Product
 from django.urls import reverse
+from stock.models import Stock
 
 
 
@@ -66,8 +67,7 @@ class OutflowDeleteView(DeleteView):
 
 
 def get_product_stock(request):
-    product_id = request.GET.get('product_id')
-    
+    product_id = request.GET.get('product_id')    
     product = Product.objects.get(id=product_id)
     stock = product.stock.quantity  # Supondo que `stock` é um campo no modelo `Product`
     print(f'ativamos o stock {stock}')
@@ -117,3 +117,36 @@ def create_item_outflow(request, outflow_id):
         'outflow': outflow
     }
     return render(request, 'outflow_item_create.html', context)
+
+
+class OutflowDeliver(UpdateView):
+    model = Outflow
+    template_name = 'outflow_deliver.html'
+    form_class = OutflowForm
+    success_url = reverse_lazy('outflow_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        outflow_items = self.object.items.all()
+
+        # Criar um dicionário para rastrear as quantidades ajustadas de estoque
+        stock_quantities = {}
+
+        for item in outflow_items:
+            product_id = item.product.id
+            if product_id not in stock_quantities:
+                # Inicializa a quantidade de estoque no dicionário
+                stock_quantities[product_id] = item.product.stock.quantity if hasattr(item.product, 'stock') else 0
+            # Subtrai a quantidade do item da quantidade de estoque no dicionário
+            stock_quantities[product_id] -= item.quantity
+
+        # Ajustar a quantidade restante no estoque no item para uso no template
+        for item in outflow_items:
+            product_id = item.product.id
+            item.quantity_after_outflow = stock_quantities[product_id]
+            if item.quantity_after_outflow < 0:
+                negative_stock = True
+
+        context['outflow_items'] = outflow_items
+        context['negative_stock'] = negative_stock
+        return context

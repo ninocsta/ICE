@@ -25,4 +25,5 @@ urlpatterns = [
     path('', RedirectView.as_view(url='inflows/list/')),
     path('', include('inflows.urls')),
     path('', include('outflows.urls')),
+    path('', include('stock.urls')),
 ]

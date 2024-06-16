@@ -27,19 +27,26 @@ ICE - Excluir Entrada
         </ul>
         <form action="{% url 'inflow_delete' inflow.id %}" method="post">
             {% csrf_token %}
+            {% if can_delete %}
             <a href="{% url 'inflow_list' %}" class="btn btn-secondary">
                 <i class="bi bi-arrow-left"></i> Cancelar
             </a>
-            {% if can_delete %}
             <button type="submit" class="btn btn-danger">
                 <i class="bi bi-trash"></i> Excluir
             </button>
             {% else %}
+            
+            <div class="alert alert-danger" role="alert">
+                Não é possível cancelar a entrada porque o estoque de um ou mais produtos ficaria negativo.
+              </div>
+              <a href="{% url 'inflow_list' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Cancelar
+            </a>
             <button type="submit" class="btn btn-danger" disabled>
                 <i class="bi bi-trash"></i> Excluir
 
             </button>
-            <small class="text-danger">Não é possível excluir esta entrada pois o estoque não pode ficar negativo.</small>
+
             {% endif %}
 
         </form>

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}
+ICE - Estoque
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3 class="display-4">Estoque</h3>
+
+  <div class="card">
+    <div class="card-body">
+      <h3 class="card-title">Itens:</h3>
+      <div class="table-responsive-sm">
+        <table class="table">
+          <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Peso</th>
+                <th>Custo Médio</th>
+                <th>Custo Total</th>
+                <th>Estoque mínimo</th>
+                <th class="text-center">Quantidade em Estoque</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in stock %}
+            
+            <tr class="">
+                <td>{{ item.product.title }}</td>
+                <td>{{ item.product.weight }}kg</td>
+                <td>R${{ item.average_cost }}</td>
+                <td>R${{ item.total_cost }}</td>  
+                <td>{{ item.product.min_stock }}</td>
+                <td class="text-center {% if item.quantity < item.product.min_stock %} bg-warning text-dark  {% endif %} bg-success">{{ item.quantity }}</td>              
+            </tr>
+           
+            {% endfor %}
+          </tbody>
+          {% include 'components/_pagination.html' %}
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

@@ -14,13 +14,18 @@
               </a>
             </li>
 
-              <li>
-                <a href="" class="nav-link px-0 align-middle">
-                  <i class="bi bi-box-seam fs-4"></i>
-                  <span class="ms-1">Produtos</span>
-                </a>
-              </li>
+            <li>
+              <a href="{% url 'stock_list' %}" class="nav-link px-0 align-middle">
+                <i class="bi bi-archive fs-4"></i>
+                <span class="ms-1">Estoque</span>
+              </a>
+            </li>
 
+            <li>
+              <a href="{% url 'stock_forecast' %}" class="nav-link px-0 align-middle">
+                <i class="bi bi-bar-chart-line fs-4"></i>
+                <span class="ms-1">Previsão de Estoque</span>
+            </li>
 
               <li>
                 <a href="{% url 'inflow_list' %}" class="nav-link px-0 align-middle">
@@ -34,6 +39,13 @@
                 <a href="{% url 'outflow_list' %}" class="nav-link px-0 align-middle">
                   <i class="bi bi-arrow-up-right-square fs-4"></i>
                   <span class="ms-1">Saídas</span>
+                </a>
+              </li>
+
+              <li>
+                <a href="" class="nav-link px-0 align-middle">
+                  <i class="bi bi-box-seam fs-4"></i>
+                  <span class="ms-1">Produtos</span>
                 </a>
               </li>
 
