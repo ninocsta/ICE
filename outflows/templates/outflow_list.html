@@ -7,11 +7,14 @@ ICE - Saídas
 {% block content %}
 
 <div class="row mb-3">
-  <div class="col-md-6">    
-    <a href="?status=P" class="btn btn-info">Pendente</a>
-    <a href="?status=E" class="btn btn-info">Entregue</a>
+  <div class="col-md-6">
+    {% with request.GET.status as current_status %}
+    <a href="?status=P" class="btn {% if current_status == 'P' or current_status == '' %}btn-info text-light{% else %}btn-info{% endif %}">Pendente</a>
+    <a href="?status=E" class="btn {% if current_status == 'E' %}text-light btn-info{% else %}btn-info{% endif %}">Entregue</a>
+    {% endwith %}
+    
   </div>
-  <div class="col-md-6">    
+  <div class="col-md-6">
     <a href="{% url 'outflow_create' %}" class="btn btn-success float-end">
       <i class="bi bi-plus"></i> Nova Saída
     </a>
@@ -24,7 +27,7 @@ ICE - Saídas
       <tr>
         <th>ID Saída</th>
         <th>Data Entrega</th>
-        <th>Cliente</th>        
+        <th>Cliente</th>
         <th>Custo</th>
         <th>Valor</th>
         <th>Lucro</th>
@@ -36,7 +39,7 @@ ICE - Saídas
       <tr>
         <td>
           <!-- <a href="" class="text-primary fw-semibold"> -->
-            {{ outflow.id }}
+          {{ outflow.id }}
           </a>
         </td>
         <td>{{ outflow.delivery_date }}</td>
@@ -45,14 +48,17 @@ ICE - Saídas
         <td>R${{ outflow.total_price }}</td>
         <td>R${{ outflow.profit }}</td>
         <td>
-            <a href="{% url 'outflow_detail' outflow.id %}" class="btn btn-info btn-sm text-light">
-                <i class="bi bi-eye"></i>
-            </a>           
-            <a href="{% url 'outflow_delete' outflow.id %}" class="btn btn-danger btn-sm">
-                <i class="bi bi-trash"></i>   
+          <a href="{% url 'outflow_detail' outflow.id %}" class="btn btn-info btn-sm text-light">
+            <i class="bi bi-eye"></i>
           </a>
-          <a href="{% url 'outflow_update' outflow.id %}" class="btn btn-warning btn-sm text-light">
+          {% if outflow.status == 'P' %}
+          <a href="{% url 'outflow_delete' outflow.id %}" class="btn btn-danger btn-sm">
+            <i class="bi bi-trash"></i>
+          </a>
+          <a href="{% url 'outflow_update' outflow.id %}" class="btn btn-secondary btn-sm">
             <i class="bi bi-pencil"></i>
+          </a>
+          {% endif %}
         </td>
       </tr>
       {% endfor %}

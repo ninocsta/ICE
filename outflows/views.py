@@ -1,12 +1,13 @@
 from django.shortcuts import render
 from django.forms import inlineformset_factory
 from django.shortcuts import redirect
-from django.views.generic import ListView, DetailView, DeleteView, UpdateView
+from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
 from .models import Outflow, OutflowItem
 from .forms import OutflowForm, OutflowItemForm
 from django.urls import reverse_lazy
 from django.http import JsonResponse
 from products.models import Product
+from django.urls import reverse
 
 
 
@@ -79,3 +80,40 @@ class OutflowUpdateView(UpdateView):
     form_class = OutflowForm
     success_url = reverse_lazy('outflow_list')
 
+
+
+class OutflowItemDeleteView(DeleteView):
+    model = OutflowItem
+    template_name = 'outflow_item_delete.html'
+    context_object_name = 'outflow_item'
+    def get_success_url(self):
+        # Obtemos o ID do Outflow associado ao OutflowItem que está sendo excluído
+        outflow_id = self.object.outflow.id
+        # Retornamos a URL para os detalhes desse Outflow
+        return reverse_lazy('outflow_detail', kwargs={'pk': outflow_id})
+
+
+class OutflowItemUpdateView(UpdateView):
+    model = OutflowItem
+    template_name = 'outflow_item_update.html'
+    form_class = OutflowItemForm
+    def get_success_url(self):
+        # Assumindo que o modelo OutflowItem tem uma chave estrangeira para Outflow chamada 'outflow'
+        outflow_id = self.object.outflow.id
+        return reverse('outflow_detail', kwargs={'pk': outflow_id})
+
+
+def create_item_outflow(request, outflow_id):
+    outflow = Outflow.objects.get(id=outflow_id)
+    if request.method == 'POST':
+        form = OutflowItemForm(request.POST, outflow_id=outflow)
+        if form.is_valid():
+            form.save()
+            return redirect('outflow_detail', pk=outflow_id)
+    else:
+        form = OutflowItemForm(outflow_id=outflow_id)
+    context = {
+        'form': form,
+        'outflow': outflow
+    }
+    return render(request, 'outflow_item_create.html', context)

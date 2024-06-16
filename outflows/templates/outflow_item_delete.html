@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block head_title %}Confirmação de Exclusão{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h3 class="display-4">Excluir Item</h3>
+    
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <p class="card-text">Produto: <strong>{{ object.product.title }}</strong></p>
+                <p class="card-text">Peso: <strong>{{ object.product.weight }}kg</strong></p>
+                <p class="card-text">Quantidade: <strong>{{ object.quantity }}</strong></p>
+                <p class="card-text">Preço Total: <strong>R${{ object.total_price }}</strong></p>
+                <p>Tem certeza que deseja excluir estes itens?</p> 
+                <a href="{% url 'outflow_detail' object.outflow.id %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Cancelar
+                </a> 
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Excluir        </button>
+            </form>
+        </div>
+    </div>   
+</div>
+
+{% endblock %}

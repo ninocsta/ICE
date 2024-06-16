@@ -41,5 +41,10 @@ class OutflowItemForm(forms.ModelForm):
             'product': 'Produto',
             'quantity': 'Quantidade',
         }
-
+    def __init__(self, *args, **kwargs):
+        outflow_id = kwargs.pop('outflow_id', None)
+        super(OutflowItemForm, self).__init__(*args, **kwargs)
+        if outflow_id:
+            self.fields['outflow'].initial = outflow_id
+            
 OutflowItemFormSet = forms.inlineformset_factory(Outflow, OutflowItem, form=OutflowItemForm, extra=1, can_delete=True)
