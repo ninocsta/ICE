@@ -46,7 +46,7 @@ ICE - Confirmar Entrega
       </div>
       {% if negative_stock %}
       <div class="alert alert-danger" role="alert">
-        Não é possível confirmar a entrega porque o estoque de um ou mais produtos ficaria negativo.
+        Não é possível confirmar a entrega porque o estoque de um ou mais produtos ficará negativo. 
       </div>
       {% endif %}
       <form action="{% url 'outflow_deliver' outflow.id %}" method="post">

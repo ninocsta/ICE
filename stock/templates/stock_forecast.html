@@ -11,7 +11,7 @@ ICE - Estoque
   <div class="card">
     <div class="card-body">
       <h3 class="card-title">Itens:</h3>
-      <div class="table-responsive-sm">
+      <div class="table-responsive-md">
         <table class="table">
           <thead>
             <tr>
@@ -20,24 +20,22 @@ ICE - Estoque
                 <th>Custo Médio</th>
                 <th>Custo Total</th>
                 <th>Estoque mínimo</th>
-                <th class="text-center">Quantidade em Estoque</th>
-                <th class="text-center">Quantidade Prevista</th> <!-- Nova coluna para Quantidade Prevista -->
+                <th class="text-center">Qt em Estoque</th>
+                <th class="text-center">Qt Prevista</th> <!-- Nova coluna para Quantidade Prevista -->
             </tr>
           </thead>
           <tbody>
-            {% for item in stock %}
-            
+            {% for item in stock %}            
             <tr class="">
                 <td>{{ item.product.title }}</td>
                 <td>{{ item.product.weight }}kg</td>
                 <td>R${{ item.average_cost }}</td>
                 <td>R${{ item.total_cost }}</td>  
                 <td>{{ item.product.min_stock }}</td>
-                <td class="text-center {% if item.quantity < item.product.min_stock %} bg-warning text-dark  {% endif %} bg-success">{{ item.quantity }}</td>
-                <td class="text-center">{{ item.predicted_quantity }}</td> <!-- Exibir a quantidade prevista -->
-            </tr>
-           
-            {% endfor %}
+                <td class="text-center">{{ item.quantity }}</td>
+                <td class="text-center">{{ item.forecasted_stock|default:item.quantity }}</td> <!-- Exibir a quantidade prevista ou a quantidade atual se prevista for None -->
+            </tr>           
+            {% endfor %}            
           </tbody>
           {% include 'components/_pagination.html' %}
         </table>
@@ -45,6 +43,5 @@ ICE - Estoque
     </div>
   </div>
 </div>
-
 
 {% endblock %}

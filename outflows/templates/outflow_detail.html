@@ -25,8 +25,10 @@
 
 
         <h4 class="card-text"><strong>Itens:</strong></h4>
+        {% if outflow.status == 'P' %}
         <a href="{% url 'outflow_item_create' outflow.id %}" class="btn btn-success
         ">Novo Item</a>
+        {% endif %}
         <div class="table-responsive-sm">
           <table class="table">
             <thead>
@@ -35,7 +37,9 @@
                 <th>Peso</th>
                 <th>Quantidade</th>
                 <th>Preço Total</th>
+                {% if outflow.status == 'P' %}
                 <th>Ações</th>
+                {% endif %}
               </tr>
             </thead>
             <tbody>
@@ -45,12 +49,14 @@
                 <td>{{ item.product.weight }}kg</td>
                 <td>{{ item.quantity }}</td>
                 <td>R${{ item.total_price}} </td>
+                {% if outflow.status == 'P' %}
                 <td>
                   <a href="{% url 'outflow_item_update' item.id %}" class="btn btn-sm btn-secondary"><i class=" bi bi-pencil" style="color: white;
                     "></i></a>
                   <a href="{% url 'outflow_item_delete' item.id %}" class="btn btn-sm btn-danger"><i class="bi bi-trash" style="color: white;
                     "></i></a>                  
               </td>
+              {% endif %}
               </tr>
               {% endfor %}
             </tbody>

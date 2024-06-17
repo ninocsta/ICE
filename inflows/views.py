@@ -23,7 +23,7 @@ class InflowListView(ListView):
 
 def create_inflow(request):
     inflow_form = InflowForm()
-    inflow_item_formset = inlineformset_factory(Inflow, InflowItem, form=InflowItemForm, extra=1, min_num=1, validate_min=True, can_delete=True)
+    inflow_item_formset = inlineformset_factory(Inflow, InflowItem, form=InflowItemForm, extra=3, min_num=1, validate_min=True, can_delete=True)
 
     if request.method == 'POST':
         forms = InflowForm(request.POST, prefix='inflow_form')
