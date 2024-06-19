@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.views.generic import ListView
 from stock.models import Stock
-from outflows.models import Outflow
+from outflows.models import Outflow, OutflowItem
 from django.db.models import Sum, F, Q
+from django.db import models
 
 class StockListView(ListView):
     template_name = 'stock.html'
@@ -20,13 +21,12 @@ class StockForecastView(ListView):
     paginate_by = 15
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.annotate(
-            pending_outflows=Sum(
+        # Anotar a QuerySet com a quantidade pendente de cada produto
+        queryset = super().get_queryset().annotate(
+            pending_quantity=Sum(
                 F('product__outflowitem__quantity'),
-                filter=Q(product__outflowitem__outflow__status='P')
+                filter=Q(product__outflowitem__outflow__status='P'),
+                output_field=models.IntegerField()
             )
-        ).annotate(
-            forecasted_stock=F('quantity') - F('pending_outflows')
         )
         return queryset

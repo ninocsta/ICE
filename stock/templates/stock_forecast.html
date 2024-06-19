@@ -17,9 +17,6 @@ ICE - Estoque
             <tr>
                 <th>Produto</th>
                 <th>Peso</th>
-                <th>Custo Médio</th>
-                <th>Custo Total</th>
-                <th>Estoque mínimo</th>
                 <th class="text-center">Qt em Estoque</th>
                 <th class="text-center">Qt Prevista</th> <!-- Nova coluna para Quantidade Prevista -->
             </tr>
@@ -28,12 +25,9 @@ ICE - Estoque
             {% for item in stock %}            
             <tr class="">
                 <td>{{ item.product.title }}</td>
-                <td>{{ item.product.weight }}kg</td>
-                <td>R${{ item.average_cost }}</td>
-                <td>R${{ item.total_cost }}</td>  
-                <td>{{ item.product.min_stock }}</td>
+                <td>{{ item.product.weight }}kg</td>                
                 <td class="text-center">{{ item.quantity }}</td>
-                <td class="text-center">{{ item.forecasted_stock|default:item.quantity }}</td> <!-- Exibir a quantidade prevista ou a quantidade atual se prevista for None -->
+                <td class="text-center">{{ item.pending_quantity|default:"0" }}</td>
             </tr>           
             {% endfor %}            
           </tbody>

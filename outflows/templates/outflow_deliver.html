@@ -28,7 +28,7 @@ ICE - Confirmar Entrega
               <th>Peso</th>
               <th>Quantidade</th>
               <th>Preço Total</th>
-              <th>Quantidade em Estoque</th>
+              <th>Quantidade em Estoque após entrega</th>
             </tr>
           </thead>
           <tbody>
@@ -50,7 +50,7 @@ ICE - Confirmar Entrega
       </div>
       {% endif %}
       <form action="{% url 'outflow_deliver' outflow.id %}" method="post">
-        {% csrf_token %}
+        {% csrf_token %}        
         <a href="{% url 'outflow_list' %}" class="btn btn-secondary">
           <i class="bi bi-arrow-left"></i> Cancelar
       </a>

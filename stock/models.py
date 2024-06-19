@@ -12,6 +12,7 @@ class Stock(models.Model):
     class Meta:
         verbose_name = 'Estoque'
         verbose_name_plural = 'Estoque'
+        ordering = ['quantity']
 
     def __str__(self):
         return f'{self.product.title} {self.quantity}'
