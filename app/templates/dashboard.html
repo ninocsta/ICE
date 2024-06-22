@@ -4,32 +4,226 @@
 {% block content %}
 <div class="container mt-4">
     <h3 class="display-4">Dashboard</h3>
+    <div class="row">
+        <div class="col-md-3">
+
+            <div class="card-body">
+                <h5 class="card-title">Mês</h5>
+                <!-- Campo de entrada para a data -->
+                <input class="rounded p-2" type="month" id="dataInput" name="data">
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total de Pedidos Pendentes</h5>
+                    <h4 class="card-subtitle mb-2 text-muted">{{ total_pending_sales }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total de Pedidos Entregues (mês)</h5>
+                    <h4 class="card-subtitle mb-2 text-muted" id="totalDeliveredSales"></h4>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+
 
     <div class="row mt-4">
         <div class="col-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Total de Vendas</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">R${{ total_sales }}</h6>
+                    <h5 class="card-title">Faturamento (mês)</h5>
+                    <h3 class="card-subtitle mb-2 text-muted" id="faturamento">R$</h3>
                 </div>
             </div>
         </div>
         <div class="col-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Total de Compras</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">R${{ total_purchases }}</h6>
+                    <h5 class="card-title">Custo (mês)</h5>
+                    <h3 class="card-subtitle mb-2 text-muted" id="custo">R$</h3>
                 </div>
             </div>
         </div>
         <div class="col-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Total de Lucro</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">R${{ total_profit }}</h6>
+                    <h5 class="card-title">Lucro (mês)</h5>
+                    <h3 class="card-subtitle mb-2 text-muted" id="lucro">R$</h3>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<div class="row pt-5">
+    <div class="col-md-5">
+        <canvas id="productSalesChart" height="200"></canvas>
+    </div>
+
+    <div class="col-md-7">
+        <canvas id="saidasChart" width="400" height="200"></canvas>
+    </div>
+</div>
+
+
+{{ meses_formatados|json_script:"meses-data" }}
+{{ lucros_mensais|json_script:"valores-totais-data" }}
+{{ data|json_script:"data" }}
+<script type="text/javascript">
+    // Recupera os dados de Python
+    const labels = JSON.parse(document.getElementById('meses-data').textContent);
+    console.log(labels);
+    const dataValues = JSON.parse(document.getElementById('valores-totais-data').textContent);
+    console.log(dataValues);
+    const productData = JSON.parse(document.getElementById('data').textContent);
+    console.log(data);
+</script>
+
+<script>
+    // Configuração do gráfico
+    const data = {
+        labels: labels,
+        datasets: [
+            {
+                label: 'Valor Total',
+                data: dataValues,
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',  // Azul
+                ],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 1)',  // Azul
+                ],
+            }
+        ]
+    };
+
+    const config = {
+        type: 'bar',
+        data: data,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Total Faturado nos Últimos 6 Meses'
+                },
+
+            }
+        },
+    };
+    // Inicializa o gráfico
+    var ctx = document.getElementById('saidasChart').getContext('2d');
+    var pedidosChart = new Chart(ctx, config);
+</script>
+
+<script>
+    let productSalesChart;
+
+    $(document).ready(function () {
+        let today = new Date();
+        let month = today.getMonth() + 1;
+        let year = today.getFullYear();
+        if (month < 10) month = '0' + month;
+        $('#dataInput').val(year + '-' + month);
+
+        // Chama a função loadData quando a página carrega
+        loadData();
+
+        $('#dataInput').change(function () {
+            // Chama a função loadData quando a data muda
+            loadData();
+        });
+    });
+
+    function loadData() {
+        let data = $('#dataInput').val();
+        $.ajax({
+            url: "{% url 'data' %}",
+            type: 'GET',
+            data: {
+                data: data
+            },
+            success: function (response) {
+                // Aqui estamos acessando as propriedades corretas do objeto
+                let faturamento = response.data.monthly_totals.total_month_price;
+                let custo = response.data.monthly_totals.total_month_cost;
+                let lucro = response.data.monthly_totals.profit;
+                let total_delivered_sales = response.data.monthly_totals.total_delivered_sales;
+
+                $('#faturamento').text('R$ ' + faturamento);
+                $('#custo').text('R$ ' + custo);
+                $('#lucro').text('R$ ' + lucro);
+                $('#totalDeliveredSales').text(total_delivered_sales);
+
+                const productTitles = response.data.product_sales[0];
+                const totalSales = response.data.product_sales[1];
+
+                const productData = {
+                    labels: productTitles,
+                    datasets: [
+                        {
+                            label: 'Quantidade Vendida',
+                            data: totalSales,
+                            borderColor: [
+                                'rgba(75, 192, 192, 1)',  // Verde
+                            ],
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.2)',  // Verde
+                            ],
+                        }
+                    ]
+                };
+
+                const productConfig = {
+                    type: 'bar',
+                    data: productData,
+                    options: {
+                        responsive: true,
+                        indexAxis: 'y',
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Top 6 Produtos Vendidos no Mês'
+                            },
+                            // Configuração correta de dataLabels dentro de plugins
+                            datalabels: {
+                                color: 'green', // Define a cor das labels
+                                anchor: 'center',
+                                align: 'center',
+                                formatter: function (value, context) {
+                                    return value; // Retorna o valor do label
+                                }
+                            }
+                        }
+                    },
+                    plugins: [ChartDataLabels] // Registro do plugin
+                };
+
+                // Destrói o gráfico existente antes de criar um novo
+                if (productSalesChart) {
+                    productSalesChart.destroy();
+                }
+
+                // Inicializa o gráfico de vendas de produtos
+                var productCtx = document.getElementById('productSalesChart').getContext('2d');
+                productSalesChart = new Chart(productCtx, productConfig);
+            }
+        });
+    }
+</script>
+
 {% endblock %}

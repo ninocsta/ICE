@@ -14,7 +14,7 @@ class Product(models.Model):
         verbose_name_plural = 'Produtos'
 
     def __str__(self):
-        return f'{self.title} {self.weight}kg'
+        return f'{self.title}'
 
 class PriceTable(models.Model):
     title = models.CharField(max_length=120)   
