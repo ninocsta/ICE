@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="display-4">Detalhes da Tabela de Preço</h3>
+    <div class="card">
+        <div class="card-body">
+
+            <h3 class="card-title">{{ price_table.title }}</h3>
+            <h5>Descrição:</h5>
+            <p class="card-text">{{ price_table.description|linebreaksbr }}</p>
+        </div>        
+    </div>
+</div>
+<a href="{% url 'price_table_list' %}" class="btn btn-secondary mt-3">Voltar para a Lista de Tabelas</a>
+{% endblock %}

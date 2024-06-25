@@ -23,4 +23,16 @@ class ProductForm(forms.ModelForm):
         }
 
 
+class PriceTableForm(forms.ModelForm):
+    class Meta:
+        model = PriceTable
+        fields = '__all__'
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            'title': 'Nome',
+            'description': 'Descrição',
+        }
 

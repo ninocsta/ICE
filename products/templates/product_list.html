@@ -44,7 +44,7 @@ ICE - Produtos
         <a href="{% url 'product_update' product_info.product.id %}" class="btn btn-secondary btn-sm ms-1 text-light">
             <i class="bi bi-pencil"></i>
         </a>
-        <a href="" class="btn btn-danger btn-sm ms-1">
+        <a href="{% url 'product_delete' product_info.product.id %}" class="btn btn-danger btn-sm ms-1">
             <i class="bi bi-trash"></i>
         </a>
     </td>

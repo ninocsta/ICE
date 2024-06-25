@@ -14,10 +14,10 @@ ICE - Produtos
     <div class="col-md-8 col-md-offset-2">
         <form action="" method="POST">
             {% csrf_token %}
-            {{ form|crispy }}  <!-- Corrigido aqui -->
+            {{ form|crispy }}  
 
             <div class="form-inline buttons pt-3">
-                <a href="{% url 'product_list' %}" class="btn btn-secondary pull-right"><i class="fa fa-times"></i> Cancelar</a>  <!-- Corrigido aqui -->
+                <a href="{% url 'product_list' %}" class="btn btn-secondary pull-right"><i class="fa fa-times"></i> Cancelar</a>  
                 <button type="submit" class="btn btn-light pull-right" value="Save"><i class="fa fa-floppy-o"></i> Salvar</button>
             </div>
         </form>
