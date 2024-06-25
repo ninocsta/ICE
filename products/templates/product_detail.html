@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="display-4">Detalhes do produto</h3>
+    <div class="card">
+        <div class="card-body">
+
+            <h3 class="card-title">{{ product.title }}</h3>
+            <p class="card-text">Custo: <strong>R${{ product.cost }}</strong></p>
+            <p class="card-text">Estoque: <strong>{{ product.min_stock }}</strong></p>
+            <p class="card-text">Peso: <strong>{{ product.weight }} kg</strong></p>
+            <p class="card-text">Descrição: <strong>{{ product.description }}</strong></p>
+
+            <h4 class="card-text"><strong>Preços:</strong></h4>
+            <div class="table-responsive-sm">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Tabela</th>
+                            <th>Preço</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product_price in product_prices %}
+                        <tr>
+                            <td>{{ product_price.price_table.title }}</td>
+                            <td>R${{ product_price.price }}</td>
+                            <td>
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#vincularModal"
+                                    data-product-id="{{ product.id }}"
+                                    data-price-table-id="{{ product_price.price_table.id }}">Editar</button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3">Este produto não possui preços associados.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if price_tables %}
+                <h4 class="card-text"><strong>Tabelas de Preços Disponíveis:</strong></h4>
+                <div class="table-responsive-sm">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Tabela</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for price_table in price_tables %}
+                            <tr>
+                                <td>{{ price_table.title }}</td>
+                                <td>
+                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#vincularModal"
+                                            data-product-id="{{ product.id }}"
+                                            data-price-table-id="{{ price_table.id }}">Vincular</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <a href="{% url 'product_list' %}" class="btn btn-secondary mt-3">Voltar para a Lista de Produtos</a>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="vincularModal" tabindex="-1" role="dialog" aria-labelledby="vincularModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="vincularModalLabel">Vincular Tabela de Preço</h5>
+
+            </div>
+            <div class="modal-body">
+                <form id="">
+                    <div class="form-group">
+                        <label for="price">Preço</label>
+                        <input type="number" class="form-control" id="price" step="0.01" required>
+                    </div>
+                    <input type="hidden" id="product_id">
+                    <input type="hidden" id="price_table_id">
+                    <button type="button" class="btn btn-secondary mt-2" data-bs-dismiss="modal" aria-label="Close">
+                        Cancelar
+                    </button>
+                    <button type="submit" id="vincularForm" class="btn btn-light mt-2">Salvar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    $(document).ready(function () {
+        $('#vincularModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)
+            var productId = button.data('product-id')
+            var priceTableId = button.data('price-table-id')
+            var modal = $(this)
+            modal.find('#product_id').val(productId)
+            modal.find('#price_table_id').val(priceTableId)
+        });
+
+        $('#vincularForm').on('click', function (event) {
+            event.preventDefault()
+            console.log('ativou o modal')
+            var productId = $('#product_id').val()
+            var priceTableId = $('#price_table_id').val()
+            var price = $('#price').val()
+
+            $.ajax({
+                url: "{% url 'vincular_preco' %}",
+                method: "POST",
+                data: {
+                    product_id: productId,
+                    price_table_id: priceTableId,
+                    price: price,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function (data) {
+                    $('#vincularModal').modal('hide'); // Fechar o modal antes de exibir o alerta
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Orçamento criado com sucesso!",
+                        showConfirmButton: false,
+                        timer: 1500,
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed || result.dismiss === Swal.DismissReason.timer) {
+                            location.reload();
+                        }
+                    });
+                },
+                error: function (error) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Erro",
+                        text: "Ocorreu um erro",    
+                        confirmButtonColor: "#3085d6",
+                    });
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

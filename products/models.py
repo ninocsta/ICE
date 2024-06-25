@@ -6,7 +6,7 @@ class Product(models.Model):
     title = models.CharField(max_length=120)
     description = models.TextField(blank=True, null=True)
     min_stock = models.IntegerField(default=0)
-    weight = models.DecimalField(max_digits=5, decimal_places=2)
+    weight = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
     cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     class Meta:
@@ -15,6 +15,11 @@ class Product(models.Model):
 
     def __str__(self):
         return f'{self.title}'
+    
+    def has_price_table(self, price_table):
+        return self.prices.filter(price_table=price_table).exists()
+
+
 
 class PriceTable(models.Model):
     title = models.CharField(max_length=120)   
@@ -24,7 +29,7 @@ class PriceTable(models.Model):
         verbose_name = 'Tabela de Preços'
         verbose_name_plural = 'Tabelas de Preços'
 
-    def __str__(self):
+    def __str__(self):  
         return self.title
     
 
