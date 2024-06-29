@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}
+ICE - Clientes
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <h1 class="page-header text-center">Cadastro Cliente</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{ form|crispy }}  <!-- Corrigido aqui -->
+
+            <div class="form-inline buttons pt-3">
+                <a href="{% url 'client_list' %}" class="btn btn-secondary pull-right"><i class="fa fa-times"></i> Cancelar</a>  <!-- Corrigido aqui -->
+                <button type="submit" class="btn btn-light pull-right" value="Save"><i class="fa fa-floppy-o"></i> Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>    
+
+{% endblock %}

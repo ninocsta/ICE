@@ -1,32 +1,31 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% block title %}
-ICE - Produtos
+ICE - Clientes
 {% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
-        <h1 class="page-header text-center">Excluir Produto</h1>
+        <h1 class="page-header text-center">Excluir Cliente</h1>
     </div>
 </div>
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
-        <h3 class="mt-3">Tem certeza que deseja excluir esse produto ?</h3>
-        <h5>{{ product.title }}</h5>
-        <p><strong>OBS: Se o produto estiver vinculado a uma entrada e/ou saída, não é possível realizar a exclusão.</strong></p>
+        <h3 class="mt-3">Tem certeza que deseja excluir esse cliente ?</h3>
+        <h5>{{ client.name }}</h5>
+        
         <form action="" method="POST">
             {% csrf_token %}
             {{ form|crispy }}
 
             <div class="form-inline buttons pt-3">
-                
-                <a href="{% url 'product_list' %}" class="btn btn-secondary pull-right"><i class="fa fa-times"></i> Cancelar</a>
-                {% if inflow_linked or outflow_linked %}
+                <a href="{% url 'client_list' %}" class="btn btn-secondary pull-right"><i class="fa fa-times"></i> Cancelar</a>
+                {% if outflows_exist %}                
                 <button type="submit" class="btn btn-light pull-right" value="Save" disabled><i class="fa fa-floppy-o"></i> Salvar</button>
                 <div class="alert alert-danger mt-2" role="alert">
-                    Não é possível cancelar o produto porque ele está vinculado a uma entrada e/ou saída.
-                </div>
+                    Não é possível cancelar o cliente porque ele está vinculado a uma saída.
+                </div>     
                 {% else %}
                 <button type="submit" class="btn btn-light pull-right" value="Save"><i class="fa fa-floppy-o"></i> Salvar</button>                           
                 {% endif %}

@@ -5,8 +5,9 @@ from .models import Product, PriceTable, ProductPrice
 from .forms import ProductForm, PriceTableForm
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
-# Create your views here.
+from django.shortcuts import get_object_or_404
+from inflows.models import InflowItem
+from outflows.models import OutflowItem
 
 class ProductListView(ListView):
     model = Product
@@ -102,6 +103,19 @@ class ProductDeleteView(DeleteView):
     template_name = 'product_delete.html'
     success_url = reverse_lazy('product_list')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product_id = self.kwargs.get('pk')  # Obtém o ID do produto a partir da URL
+        product = get_object_or_404(Product, pk=product_id)
+        
+        # Verifica se existem InflowItem ou OutflowItem vinculados ao produto
+        inflow_linked = InflowItem.objects.filter(product=product).exists()
+        outflow_linked = OutflowItem.objects.filter(product=product).exists()
+        
+        # Adiciona os resultados ao contexto
+        context['inflow_linked'] = inflow_linked
+        context['outflow_linked'] = outflow_linked
+        return context
 
 class PriceTableListView(ListView):
     model = PriceTable
@@ -134,3 +148,4 @@ class PriceTableDeleteView(DeleteView):
     model = PriceTable
     template_name = 'price_table_delete.html'
     success_url = reverse_lazy('price_table_list')
+

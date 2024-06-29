@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="display-4">Detalhes do Cliente</h3>
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">{{ client.name|default_if_none:"" }}</h3>
+            <p class="card-text">CPF/CNPJ: <strong>{{ client.cpfcnpj|default_if_none:"" }}</strong></p>
+            <p class="card-text">Telefone: <strong>{{ client.fone|default_if_none:"" }}</strong></p>
+            <p class="card-text">Endereço: <strong>{{ client.adress|default_if_none:"" }}</strong></p>
+            <p class="card-text">Cidade: <strong>{{ client.city|default_if_none:"" }}</strong></p>
+        </div>        
+    </div>
+</div>
+<a href="{% url 'client_list' %}" class="btn btn-secondary mt-3">Voltar para a Lista de Clientes</a>
+{% endblock %}

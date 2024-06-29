@@ -13,4 +13,5 @@ urlpatterns = [
     path('', include('outflows.urls')),
     path('', include('stock.urls')),
     path('', include('products.urls')),
+    path('', include('clients.urls')),
 ]
